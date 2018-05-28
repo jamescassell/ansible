@@ -894,8 +894,26 @@ class StrategyBase:
         elif meta_action == 'reset_connection':
             all_vars = self._variable_manager.get_vars(play=iterator._play, host=target_host, task=task)
             templar = Templar(loader=self._loader, variables=all_vars)
-            updated_play_context = self._play_context.set_task_and_variable_override(task=task, variables=all_vars, templar=templar)
-            connection = connection_loader.get(updated_play_context.connection, updated_play_context, os.devnull)
+
+            # apply the given task's information to the connection info,
+            # which may override some fields already set by the play or
+            # the options specified on the command line
+            play_context = play_context.set_task_and_variable_override(task=task, variables=all_vars, templar=templar)
+
+            # fields set from the play/task may be based on variables, so we have to
+            # do the same kind of post validation step on it here before we use it.
+            play_context.post_validate(templar=templar)
+
+            # now that the play context is finalized, if the remote_addr is not set
+            # default to using the host's address field as the remote address
+            if not play_context.remote_addr:
+                play_context.remote_addr = target_host.address
+
+            # We also add "magic" variables back into the variables dict to make sure
+            # a certain subset of variables exist.
+            play_context.update_vars(all_vars)
+
+            connection = connection_loader.get(play_context.connection, play_context, os.devnull)
             play_context.set_options_from_plugin(connection)
             if connection:
                 connection.reset()
