@@ -31,6 +31,7 @@ DOCUMENTATION = '''
         default: no
         env:
           - name: DISPLAY_SKIPPED_HOSTS
+          - name: ANSIBLE_DISPLAY_SKIPPED_HOSTS
         ini:
           - key: display_skipped_hosts
             section: defaults
