@@ -41,11 +41,11 @@ DOCUMENTATION = """
     requirements:
       - pyvmomi (python library)
     options:
-      connection_address:
+      vmware_host:
         description:
           - Address for the connection (vCenter or ESXi Host).
         vars:
-          - name: ansible_vmware_tools_connection_address
+          - name: ansible_vmware_host
         required: True
       connection_username:
         description:
@@ -66,7 +66,7 @@ DOCUMENTATION = """
       connection_verify_ssl:
         description:
           - Verify SSL for the connection.
-          - "Note: This will verify SSL for both C(connection_address) and the ESXi host running the VM."
+          - "Note: This will verify SSL for both C(vmware_host) and the ESXi host running the VM."
         vars:
           - name: ansible_vmware_tools_connection_verify_ssl
         default: True
@@ -122,9 +122,9 @@ class Connection(ConnectionBase):
     transport = "vmware_tools"
 
     @property
-    def connection_address(self):
+    def vmware_host(self):
         """Read-only property holding the connection address."""
-        return self.get_option("connection_address")
+        return self.get_option("vmware_host")
 
     @property
     def connection_verify_ssl(self):
@@ -162,7 +162,7 @@ class Connection(ConnectionBase):
             self.allow_extras = True
 
     def _establish_connection(self):
-        connection_kwargs = {"host": self.connection_address, "user": self.get_option("connection_username"), "pwd": self.get_option("connection_password")}
+        connection_kwargs = {"host": self.vmware_host, "user": self.get_option("connection_username"), "pwd": self.get_option("connection_password")}
 
         if self.connection_verify_ssl:
             connect = SmartConnect
@@ -280,7 +280,7 @@ class Connection(ConnectionBase):
 
         https://code.vmware.com/apis/358/vsphere#/doc/vim.vm.guest.FileManager.FileTransferInformation.html
         """
-        return url.replace("*", self.connection_address)
+        return url.replace("*", self.vmware_host)
 
     def _fetch_file_from_vm(self, guestFilePath):
         try:
