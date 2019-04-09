@@ -128,6 +128,75 @@ DOCUMENTATION = """
         type: integer
 """
 
+EXAMPLES = '''
+# example vars.yml
+---
+ansible_connection: vmware_tools
+
+ansible_vmware_host: vcenter.example.com
+ansible_vmware_user: administrator@vsphere.local
+ansible_vmware_password: Secr3tP4ssw0rd!12
+ansible_vmware_validate_certs: no  # default is yes
+ansible_vmware_silence_tls_warnings: yes # default is no
+
+# vCenter Connection VM Path Example
+ansible_vmware_guest_path: DATACENTER/vm/FOLDER/{{ inventory_hostname }}
+# ESXi Connection VM Path Example
+ansible_vmware_guest_path: ha-datacenter/vm/{{ inventory_hostname }}
+
+ansible_vmware_tools_user: root
+ansible_vmware_tools_password: MyR00tPassw0rD
+
+# if the target VM guest is Windows set the 'ansible_shell_type' to 'powershell'
+ansible_shell_type: powershell
+
+
+# example playbook_linux.yml
+---
+- name: Test VMware Tools Connection Plugin
+  hosts: linux
+  tasks:
+    - command: whoami
+
+    - ping:
+
+    - copy:
+        src: foo
+        dest: /home/user/foo
+
+    - fetch:
+        src: /home/user/foo
+        dest: linux-foo
+        flat: yes
+
+    - file:
+        path: /home/user/foo
+        state: absent
+
+
+# example playbook_windows.yml
+---
+- name: Test VMware Tools Connection Plugin
+  hosts: windows
+  tasks:
+    - win_command: whoami
+
+    - win_ping:
+
+    - win_copy:
+        src: foo
+        dest: C:\Users\user\foo
+
+    - fetch:
+        src: C:\Users\user\foo
+        dest: windows-foo
+        flat: yes
+
+    - win_file:
+        path: C:\Users\user\foo
+        state: absent
+'''
+
 
 class Connection(ConnectionBase):
     """VMware Tools Connection."""
