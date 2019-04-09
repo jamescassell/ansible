@@ -71,11 +71,11 @@ DOCUMENTATION = """
           - name: ansible_vmware_validate_certs
         default: True
         type: bool
-      connection_ignore_ssl_warnings:
+      silence_tls_warnings:
         description:
-          - Ignore SSL warnings for the connection.
+          - Don't output warnings about insecure connections.
         vars:
-          - name: ansible_vmware_tools_connection_ignore_ssl_warnings
+          - name: ansible_vmware_silence_tls_warnings
         default: False
         type: bool
       vm_path:
@@ -167,7 +167,7 @@ class Connection(ConnectionBase):
         if self.validate_certs:
             connect = SmartConnect
         else:
-            if self.get_option("connection_ignore_ssl_warnings"):
+            if self.get_option("silence_tls_warnings"):
                 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
             connect = SmartConnectNoSSL
 
