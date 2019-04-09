@@ -37,6 +37,7 @@ DOCUMENTATION = """
     description:
       - Execute modules via VMware Tools.
       - "Note: Windows VMs will need to have C(ansible_shell_type: powershell) set."
+      - Does not work with 'become'
     version_added: "2.8"
     requirements:
       - pyvmomi (python library)
