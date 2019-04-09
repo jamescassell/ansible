@@ -47,7 +47,7 @@ DOCUMENTATION = """
         vars:
           - name: ansible_vmware_host
         required: True
-      connection_username:
+      vmware_user:
         description:
           - Username for the connection.
           - "Requires the following permissions on the VM:
@@ -55,7 +55,7 @@ DOCUMENTATION = """
                - VirtualMachine.GuestOperations.Modify
                - VirtualMachine.GuestOperations.Query"
         vars:
-          - name: ansible_vmware_tools_connection_username
+          - name: ansible_vmware_user
         required: True
       connection_password:
         description:
@@ -162,7 +162,7 @@ class Connection(ConnectionBase):
             self.allow_extras = True
 
     def _establish_connection(self):
-        connection_kwargs = {"host": self.vmware_host, "user": self.get_option("connection_username"), "pwd": self.get_option("connection_password")}
+        connection_kwargs = {"host": self.vmware_host, "user": self.get_option("vmware_user"), "pwd": self.get_option("connection_password")}
 
         if self.connection_verify_ssl:
             connect = SmartConnect
