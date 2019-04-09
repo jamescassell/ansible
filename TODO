@@ -1,0 +1,18 @@
+azure: multi-valued thing
+ovirt: auth subkey
+postgresql: ssl_mode -> validate_certs (multi-valued)
+skidive: insecure -> validate_certs (inverse)
+mongodb: ssl_cert_reqs -> validate_certs (multi-valued thing as of now)
+grafana_dashboard: tls_skip_verify -> validate_certs (inverse)
+avi_pkiprofile: ca_certs (list, not string)
+fortios/manager: very complex options
+f5: complex options
+redhat_subscription: server_insecure -> validate_certs (inverse)
+github_webhook: verify_ssl -> validate_certs (inverse)
+
+win_chocolatey_source: certificate -> client_cert (like win_uri)
+
+psrp connection: cert_validation -> validate_certs (multi-valued)
+
+yum_repo: only a thin wrapper
+
