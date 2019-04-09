@@ -63,12 +63,12 @@ DOCUMENTATION = """
         vars:
           - name: ansible_vmware_password
         required: True
-      connection_verify_ssl:
+      validate_certs:
         description:
           - Verify SSL for the connection.
-          - "Note: This will verify SSL for both C(vmware_host) and the ESXi host running the VM."
+          - "Note: This will validate certs for both C(vmware_host) and the ESXi host running the VM."
         vars:
-          - name: ansible_vmware_tools_connection_verify_ssl
+          - name: ansible_vmware_validate_certs
         default: True
         type: bool
       connection_ignore_ssl_warnings:
@@ -127,9 +127,9 @@ class Connection(ConnectionBase):
         return self.get_option("vmware_host")
 
     @property
-    def connection_verify_ssl(self):
-        """Read-only property holding whether the connection should verify ssl."""
-        return self.get_option("connection_verify_ssl")
+    def validate_certs(self):
+        """Read-only property holding whether the connection should validate certs."""
+        return self.get_option("validate_certs")
 
     @property
     def authManager(self):
@@ -164,7 +164,7 @@ class Connection(ConnectionBase):
     def _establish_connection(self):
         connection_kwargs = {"host": self.vmware_host, "user": self.get_option("vmware_user"), "pwd": self.get_option("vmware_password")}
 
-        if self.connection_verify_ssl:
+        if self.validate_certs:
             connect = SmartConnect
         else:
             if self.get_option("connection_ignore_ssl_warnings"):
@@ -289,7 +289,7 @@ class Connection(ConnectionBase):
             raise AnsibleError("No Permission Error: %s %s" % (to_native(e.msg), to_native(e.privilegeId)))
 
         url = self._fix_url_for_hosts(fileTransferInformation.url)
-        response = requests.get(url, verify=self.connection_verify_ssl, stream=True)
+        response = requests.get(url, verify=self.validate_certs, stream=True)
 
         if response.status_code != 200:
             raise AnsibleError("Failed to fetch file")
@@ -363,7 +363,7 @@ class Connection(ConnectionBase):
 
         # file size of 'in_path' must be greater than 0
         with open(in_path, "rb") as fd:
-            response = requests.put(url, verify=self.connection_verify_ssl, data=fd)
+            response = requests.put(url, verify=self.validate_certs, data=fd)
 
         if response.status_code != 200:
             raise AnsibleError("File transfer failed")
