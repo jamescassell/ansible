@@ -57,11 +57,11 @@ DOCUMENTATION = """
         vars:
           - name: ansible_vmware_user
         required: True
-      connection_password:
+      vmware_password:
         description:
           - Password for the connection.
         vars:
-          - name: ansible_vmware_tools_connection_password
+          - name: ansible_vmware_password
         required: True
       connection_verify_ssl:
         description:
@@ -162,7 +162,7 @@ class Connection(ConnectionBase):
             self.allow_extras = True
 
     def _establish_connection(self):
-        connection_kwargs = {"host": self.vmware_host, "user": self.get_option("vmware_user"), "pwd": self.get_option("connection_password")}
+        connection_kwargs = {"host": self.vmware_host, "user": self.get_option("vmware_user"), "pwd": self.get_option("vmware_password")}
 
         if self.connection_verify_ssl:
             connect = SmartConnect
