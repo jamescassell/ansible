@@ -87,17 +87,17 @@ DOCUMENTATION = """
         vars:
           - name: ansible_vmware_guest_path
         required: True
-      vm_username:
+      vm_user:
         description:
           - VM username.
         vars:
-          - name: ansible_vmware_tools_vm_username
+          - name: ansible_vmware_tools_user
         required: True
       vm_password:
         description:
           - VM password.
         vars:
-          - name: ansible_vmware_tools_vm_password
+          - name: ansible_vmware_tools_password
         required: True
       exec_command_sleep_interval:
         description:
@@ -189,7 +189,7 @@ class Connection(ConnectionBase):
             raise AnsibleError("Unable to find VM by path '%s'" % to_native(self.get_option("vm_path")))
 
         self.vm_auth = vim.NamePasswordAuthentication(
-            username=self.get_option("vm_username"), password=self.get_option("vm_password"), interactiveSession=False
+            username=self.get_option("vm_user"), password=self.get_option("vm_password"), interactiveSession=False
         )
 
         try:
