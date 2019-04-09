@@ -83,8 +83,9 @@ DOCUMENTATION = """
           - VM path relative to the connection.
           - "vCenter Example: C(Datacenter/vm/Discovered virtual machine/testVM) (Needs to include C(vm) between the Datacenter and the rest of the VM path.)"
           - "ESXi Host Example: C(ha-datacenter/vm/testVM) (Needs to include C(vm) between the Datacenter (C(ha-datacenter)) and the rest of the VM path.)"
+          - Must include VM name, appended to 'folder' as would be passed to vmware_guest.
         vars:
-          - name: ansible_vmware_tools_vm_path
+          - name: ansible_vmware_guest_path
         required: True
       vm_username:
         description:
