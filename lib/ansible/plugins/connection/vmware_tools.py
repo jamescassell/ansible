@@ -45,6 +45,7 @@ DOCUMENTATION = """
         description:
           - Address for the connection (vCenter or ESXi Host).
         vars:
+          - name: ansible_host
           - name: ansible_vmware_host
         required: True
       vmware_user:
@@ -55,12 +56,14 @@ DOCUMENTATION = """
                - VirtualMachine.GuestOperations.Modify
                - VirtualMachine.GuestOperations.Query"
         vars:
+          - name: ansible_user
           - name: ansible_vmware_user
         required: True
       vmware_password:
         description:
           - Password for the connection.
         vars:
+          - name: ansible_password
           - name: ansible_vmware_password
         required: True
       validate_certs:
@@ -91,12 +94,14 @@ DOCUMENTATION = """
         description:
           - VM username.
         vars:
+          - name: ansible_user
           - name: ansible_vmware_tools_user
         required: True
       vm_password:
         description:
           - VM password.
         vars:
+          - name: ansible_password
           - name: ansible_vmware_tools_password
         required: True
       exec_command_sleep_interval:
