@@ -116,8 +116,8 @@ DOCUMENTATION = """
           - exec command sleep interval in seconds.
         vars:
           - name: ansible_vmware_tools_exec_command_sleep_interval
-        default: 5
-        type: integer
+        default: 0.5
+        type: float
       file_chunk_size:
         description:
           - File chunk size.
