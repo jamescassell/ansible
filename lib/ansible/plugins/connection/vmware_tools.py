@@ -44,6 +44,8 @@ DOCUMENTATION = """
       vmware_host:
         description:
           - Address for the connection (vCenter or ESXi Host).
+        env:
+          - name: VI_SERVER
         vars:
           - name: ansible_host
           - name: ansible_vmware_host
@@ -55,6 +57,8 @@ DOCUMENTATION = """
                - VirtualMachine.GuestOperations.Execute
                - VirtualMachine.GuestOperations.Modify
                - VirtualMachine.GuestOperations.Query"
+        env:
+          - name: VI_USERNAME
         vars:
           - name: ansible_user
           - name: ansible_vmware_user
@@ -62,6 +66,8 @@ DOCUMENTATION = """
       vmware_password:
         description:
           - Password for the connection.
+        env:
+          - name: VI_PASSWORD
         vars:
           - name: ansible_password
           - name: ansible_vmware_password
