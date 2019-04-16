@@ -52,6 +52,7 @@ options:
    domain:
      description:
         - Domain to create the user in if the cloud supports domains
+     default: 'default'
    enabled:
      description:
         - Is the user enabled
@@ -187,7 +188,7 @@ def main():
         email=dict(required=False, default=None),
         default_project=dict(required=False, default=None),
         description=dict(type='str'),
-        domain=dict(required=False, default=None),
+        domain=dict(required=False, default='default'),
         enabled=dict(default=True, type='bool'),
         state=dict(default='present', choices=['absent', 'present']),
         update_password=dict(default=None, choices=['always', 'on_create']),

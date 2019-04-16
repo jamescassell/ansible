@@ -180,7 +180,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
             cloud_inventory = sdk_inventory.OpenStackInventory(
                 config_files=config_files,
-                private=self._config_data.get('private', False))
+                private=self._config_data.get('private', False), config_defaults=dict(verify=False))
             only_clouds = self._config_data.get('only_clouds', [])
             if only_clouds and not isinstance(only_clouds, list):
                 raise ValueError(
@@ -326,3 +326,38 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                     if path.endswith(maybe):
                         return True
         return False
+#
+#try:
+#    import os_client_config
+#    from os_client_config import exceptions
+#    HAS_OS_CLIENT_CONFIG = True
+#except ImportError:
+#    HAS_OS_CLIENT_CONFIG = False
+#
+#from ansible.module_utils.basic import AnsibleModule
+#
+#
+#def main():
+#    module = AnsibleModule(argument_spec=dict(
+#        clouds=dict(required=False, type='list', default=[]),
+#    ))
+#
+#    if not HAS_OS_CLIENT_CONFIG:
+#        module.fail_json(msg='os-client-config is required for this module')
+#
+#    p = module.params
+#
+#    try:
+#        config = os_client_config.OpenStackConfig()
+#        clouds = []
+#        for cloud in config.get_all_clouds():
+#            if not p['clouds'] or cloud.name in p['clouds']:
+#                cloud.config['name'] = cloud.name
+#                clouds.append(cloud.config)
+#        module.exit_json(ansible_facts=dict(openstack=dict(clouds=clouds)))
+#    except exceptions.OpenStackConfigException as e:
+#        module.fail_json(msg=str(e))
+#
+#
+#if __name__ == "__main__":
+#    main()

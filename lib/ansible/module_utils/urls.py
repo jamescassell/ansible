@@ -160,6 +160,13 @@ try:
 except ImportError:
     HAS_GSSAPI = False
 
+
+try:
+    import socks
+    HAS_SOCKS = True
+except ImportError:
+    HAS_SOCKS = False
+
 if not HAS_MATCH_HOSTNAME:
     # The following block of code is under the terms and conditions of the
     # Python Software Foundation License
@@ -815,8 +822,8 @@ class SSLValidationHandler(urllib_request.BaseHandler):
                     raise ProxyError("Failed to parse https_proxy environment variable."
                                      " Please make sure you export https proxy as 'https_proxy=<SCHEME>://<IP_ADDRESS>:<PORT>'")
 
-                s = socket.create_connection((proxy_hostname, port))
                 if proxy_parts.get('scheme') == 'http':
+                    s = socket.create_connection((proxy_hostname, port))
                     s.sendall(to_bytes(self.CONNECT_COMMAND % (self.hostname, self.port), errors='surrogate_or_strict'))
                     if proxy_parts.get('username'):
                         credentials = "%s:%s" % (proxy_parts.get('username', ''), proxy_parts.get('password', ''))
@@ -829,6 +836,22 @@ class SSLValidationHandler(urllib_request.BaseHandler):
                         if len(connect_result) > 131072:
                             raise ProxyError('Proxy sent too verbose headers. Only 128KiB allowed.')
                     self.validate_proxy_response(connect_result)
+                    if context:
+                        ssl_s = context.wrap_socket(s, server_hostname=self.hostname)
+                    elif HAS_URLLIB3_SSL_WRAP_SOCKET:
+                        ssl_s = ssl_wrap_socket(s, ca_certs=tmp_ca_cert_path, cert_reqs=ssl.CERT_REQUIRED, ssl_version=PROTOCOL, server_hostname=self.hostname)
+                    else:
+                        ssl_s = ssl.wrap_socket(s, ca_certs=tmp_ca_cert_path, cert_reqs=ssl.CERT_REQUIRED, ssl_version=PROTOCOL)
+                        match_hostname(ssl_s.getpeercert(), self.hostname)
+                elif proxy_parts.get('scheme') in ['socks5', 'socks5h']:
+                    if not HAS_SOCKS:
+                        raise ProxyError('Unsupported proxy scheme: %s. PySocks python module is required to use socks5 proxies.' % proxy_parts.get('scheme'))
+                    socks.set_default_proxy(socks.SOCKS5, addr=proxy_hostname, port=port,
+                            rdns=(proxy_parts.get('scheme')=='socks5h'),
+                            username=proxy_parts.get('username', None),
+                            password=proxy_parts.get('password', None))
+                    socket.socket = socks.socksocket
+                    s = socket.create_connection((self.hostname, self.port))
                     if context:
                         ssl_s = context.wrap_socket(s, server_hostname=self.hostname)
                     elif HAS_URLLIB3_SSL_WRAP_SOCKET:
