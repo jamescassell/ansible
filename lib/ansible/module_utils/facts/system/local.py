@@ -74,6 +74,10 @@ class LocalFactCollector(BaseFactCollector):
                 cp = configparser.ConfigParser()
                 try:
                     cp.readfp(StringIO(out))
+                except configparser.InterpolationError:
+                    # attempt a raw read in case interpolation failed
+                    cp = configparser.RawConfigParser()
+                    cp.readfp(StringIO(out))
                 except configparser.Error:
                     fact = "error loading fact - please check content"
                     module.warn(fact)
